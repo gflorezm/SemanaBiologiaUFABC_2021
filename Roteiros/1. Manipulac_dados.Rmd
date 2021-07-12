@@ -1,14 +1,15 @@
 ---
 title: "Prática 1: Leitura e manipulação de dados"
 author: "Guillermo Florez Montero e Otávio Marchetti"
-date: "`Julho de 2021`"
+date: "Julho de 2021"
 output:
   prettydoc::html_pretty:
     theme: lumen
 ---
 
 
-> Oi. Em esta prática aprenderemos como ler, corregir e manipular dados. Há muitas formas de corregir dados portanto este é só um começo.
+> Olá. 
+> Todos os dados podem ter anomalías como resultado de erros de digitação ou formatação. Em esta prática aprenderemos como ler, manipular e corregir algumas anomalías de nossos dados.
 
 $~$
 
@@ -31,196 +32,120 @@ download.file(link_metad, "metadados.txt")
 file.edit("metadados.txt")
 ```
 
-Percebam que aqui fizemos duas coisas importantes: 1) Criamos um objeto com o link da fonte dos dados e 2) Salvamos no nosso diretório de trabalho usando a função `download.file(url, path)`. Perceba que os argumentos desta função foram escritos em ordem = primeiro o *url* e depois o *caminho* do diretório onde será salvo, porém como estamos trabalhando em um diretório principal usamos só o nome final do arquivo. 
+Percebam que aqui fizemos duas coisas importantes: 1) Criamos um objeto com o link da fonte dos dados e 2) Salvamos no nosso diretório de trabalho usando a função `download.file(url, path)`. Perceba que os argumentos desta função foram escritos em ordem = primeiro o *url* e depois o *caminho* do diretório onde será salvo, porém como estamos trabalhando em um diretório principal usamos só o nome final do arquivo.
 
-```yaml
----
-title: Nineteen Years Later
-author: Harry Potter
-date: July 31, 2016
-output:
-  rmarkdown::html_document:
-    theme: lumen
----
+Tome um tempo para ler os metadados.
+
+$~$
+
+Agora vamos trabalhar com o conjunto de dados chamado `tennis.csv`. Usaremos o link da fonte porém, desta vez iremos salvá-los como um *data frame* no nosso ambiente de trabalho (não no diretório de nossa PC).
+
+```{r ler_dados2, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+# O link da fonte
+
+link_tennis <- "https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/tennis.csv"
+
+
+
+# Criamos um objeto com o dados
+
+tennis <- read.csv(link_tennis, sep = ";")
 ```
 
-The `html_document` engine uses the [Bootswatch](https://bootswatch.com/)
-theme library to support different styles of the document.
-This is a quick and easy way to tune the appearance of your document, yet with
-the price of a large file size (> 700KB) since the whole
-[Bootstrap](https://getbootstrap.com/) library needs to be packed in.
+Perceba que usamos uma função distinta `read.csv()` e demos para ela o link da fonte e o argumento `sep = ";"`. Este último indica que o separador das colunas é um ponto e vírgula e não só uma vírgula (opção por defeito).
 
-For package vignettes, we can use the `html_vignette` engine to generate
-a more lightweight HTML file that is meant to minimize the package size, but
-the output HTML is less stylish than the `html_document` ones.
+$~$
 
-So can we do **BOTH**, a lightweight yet nice-looking theme for R Markdown?
+Agora vamos explorar de forma geral os dados. As funções `head()` e `tail()` devolvem as primeiras seis linhas e as ulítmas seis linhas do *data frame*. A função `View()` abre o *data frame* inteiro em uma aba ao lado do script.
 
-## The prettydoc Engine
+```{r explorar, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
-The answer is YES! (At least towards that direction)
+head(tennis)
 
-The `prettydoc` package provides an alternative engine, `html_pretty`,
-to knit your R Markdown document into pretty HTML pages.
-Its usage is extremely easy: simply replace the
-`rmarkdown::html_document` or `rmarkdown::html_vignette` output engine by
-`prettydoc::html_pretty` in your R Markdown header, and use one of the built-in
-themes and syntax highlighters. For example
+tail(tennis)
 
-```yaml
----
-title: Nineteen Years Later
-author: Harry Potter
-date: July 31, 2016
-output:
-  prettydoc::html_pretty:
-    theme: cayman
-    highlight: github
----
+View(tennis)
 ```
 
-## Options and Themes
+$~$
 
-The options for the `html_pretty` engine are mostly compatible with the default
-`html_document`
-(see the [documentation](https://bookdown.org/yihui/rmarkdown/html-document.html))
-with a few exceptions:
+Vamos explorar os reumos dos dados usando as funções `summary()` e `str()`. Vocês conseguem diferenciar as saídas dessas funções?
 
-1. Currently the `theme` option can take the following values. More themes will
-be added in the future. 
-    - `cayman`: Modified from the [Cayman](https://github.com/jasonlong/cayman-theme) theme.
-    - `tactile`: Modified from the [Tactile](https://github.com/jasonlong/tactile-theme) theme.
-    - `architect`: Modified from the [Architect](https://github.com/jasonlong/architect-theme) theme.
-    - `leonids`: Modified from the [Leonids](https://github.com/renyuanz/leonids) theme.
-    - `hpstr`: Modified from the [HPSTR](https://github.com/mmistakes/jekyll-theme-hpstr) theme.
-2. The `highlight` option takes value from `github` and `vignette`.
-3. A new `math` parameter to choose between `mathjax` and `katex` for rendering math expressions.
-   The `katex` option supports offline display when there is no internet connection.
-4. Options `code_folding`, `code_download` and `toc_float` are not applicable.
+```{r explorar2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
-## Offline Math Expressions
+summary(tennis)
 
-By default, `html_pretty` uses MathJax to render math expressions, for example inline math
-expressions $x^2 + y^2 = z^2$, and display formulas:
+str(tennis)
 
-$$
-f(x)=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
-$$
-
-However, using MathJax requires an internet connection. If you need to create documents that can
-show math expressions offline, simply add one line `math: katex` to the document metadata:
-
-```yaml
----
-title: Nineteen Years Later
-author: Harry Potter
-date: July 31, 2016
-output:
-  prettydoc::html_pretty:
-    theme: cayman
-    highlight: github
-    math: katex
----
 ```
 
-This option will enable [KaTeX](https://katex.org/) for rendering the math expressions, and all
-resource files will be included in for offline viewing. The offline document will be ~800k larger.
+Podemos ver que por algúm motivo, a variável `pos_test` é de tipo `character`quando devería ser numérica. Vamos explorar os valores dessa variável usando a função `unique()`
 
-## Elements
+```{r explorar3, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
-We demonstrate some commonly used HTML elements here to show the appearance of themes.
+unique(tennis$pos_test)
 
-### Headers
-
-#### Level 4
-
-##### Level 5
+```
+> Uma tradução dessa linha de código: *R por favor, pega o data frame `tennis`, separa dele a coluna `pos_tes` e mostra os valores únicos (não repetidos).*
 
 
-### Tables
+Já percebemos as anomalías dos dados, a pessoa que transcreveu as planilhas colocou *"Nao"* nas células onde não havía dados (dados faltantes). Como o R reconheceu texto no meio dessa coluna a transformou em tipo `character`. Vamos corregir isso substituindo todos os "Nao" por "NA".
 
-|           | Df | Sum Sq | Mean Sq | F value | Pr(>F)  |    |
-|-----------|----|--------|---------|---------|---------|----|
-| Block     | 5  | 343.3  | 68.66   | 4.447   | 0.01594 | *  |
-| N         | 1  | 189.3  | 189.28  | 12.259  | 0.00437 | ** |
-| P         | 1  | 8.4    | 8.40    | 0.544   | 0.47490 |    |
-| K         | 1  | 95.2   | 95.20   | 6.166   | 0.02880 | *  |
-| N:P       | 1  | 21.3   | 21.28   | 1.378   | 0.26317 |    |
-| N:K       | 1  | 33.1   | 33.14   | 2.146   | 0.16865 |    |
-| P:K       | 1  | 0.5    | 0.48    | 0.031   | 0.86275 |    |
-| Residuals | 12 | 185.3  | 15.44   |         |         |    |
+```{r subsNA, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
+tennis$pos_test[tennis$pos_test == "Nao"] <- NA
 
-### Lists
-
-There are three kinds of lies:
-
-1. Lies
-2. Damned lies
-3. Statistics
-    - Frequentists
-    - Bayesian
-    - ...
-
-Supported highlighters in `prettydoc`:
-
-- `github`: Style similar to Github
-- `vignette`: Style used by `rmarkdown::html_vignette`
-
-
-### Markups
-
-**Bold**, *italic*, <del>don't say this</del>.
-
-
-### Code
-
-Familiar `knitr` R code and plots:
-
-```{r fig.width=6, fig.height=6, fig.align='center'}
-set.seed(123)
-n <- 1000
-x1  <- matrix(rnorm(n), ncol = 2)
-x2  <- matrix(rnorm(n, mean = 3, sd = 1.5), ncol = 2)
-x   <- rbind(x1, x2)
-smoothScatter(x, xlab = "x1", ylab = "x2")
-head(x)
 ```
 
-Also try some other languages, for example C++.
+> Uma tradução dessa linha de código: *R por favor, pega os valores da coluna `pos_test` do meu data frame `tennis` que tenham valores iguais a "Nao" e substitui por NA.*
 
-```cpp
-// [[Rcpp::depends(RcppEigen)]]
-// [[Rcpp::depends(RcppNumerical)]]
-#include <RcppNumerical.h>
-using namespace Numer;
-// f = 100 * (x2 - x1^2)^2 + (1 - x1)^2
-// True minimum: x1 = x2 = 1
-class Rosenbrock: public MFuncGrad
-{
-public:
-    double f_grad(Constvec& x, Refvec grad)
-    {
-        double t1 = x[1] - x[0] * x[0];
-        double t2 = 1 - x[0];
-        grad[0] = -400 * x[0] * t1 - 2 * t2;
-        grad[1] = 200 * t1;
-        return 100 * t1 * t1 + t2 * t2;
-    }
-};
-// [[Rcpp::export]]
-Rcpp::List optim_test()
-{
-    Eigen::VectorXd x(2);
-    x[0] = -1.2;
-    x[1] = 1;
-    double fopt;
-    Rosenbrock f;
-    int res = optim_lbfgs(f, x, fopt);
-    return Rcpp::List::create(
-        Rcpp::Named("xopt") = x,
-        Rcpp::Named("fopt") = fopt,
-        Rcpp::Named("status") = res
-    );
-}
+Vamos transformar, finalmente, essa coluna em uma variável numérica.
+
+```{r transf, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+tennis$pos_test <- as.numeric(tennis$pos_test)
+
 ```
+
+Vamos explorar os valores da variável grupo, vai que tem erros de digitação também
+```{r explorar4, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+unique(tennis$grupo)
+
+```
+
+Perceba que há um erro: `tratamento` em alguma das colunas. Vamos primeiro ver onde está esse erro para corrigî-lo e depois transformar a variável `grupo` em um **Fator** já que por enquanto ela é só uma variável que contem texto mas esse texto precisa ser organizado na forma de uma variável categórica.
+
+```{r transf2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+# quantos erros há? 
+sum(tennis$grupo == "tratamento")
+
+# Substituímos pela forma correta
+
+tennis$grupo[tennis$grupo == "tratamento"] <- "Tratamento"
+
+# Transformamos a variável num Fator
+
+tennis$grupo <- factor(tennis$grupo, levels = c("Controle", "Tratamento"))
+
+```
+
+Faça um `summary`para conferir o que aconteceu agora.
+
+Para finalizar, vamos salvar a planilha de dados como um arquivo `.csv` em nossa pasta de trabalho.
+
+
+```{r salvar, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+write.csv(tennis, file = "tennis.csv", row.names = FALSE)
+
+```
+
+$~$
+
+
+Agora é turno de vocês ler e corregir os dados do arquivo `a.lituratus` que se encontram [neste link](https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/a.lituratus.csv). 
+
+*Uma ajuda: todas as células que tenham `0` deveriam ser `NA`.*
