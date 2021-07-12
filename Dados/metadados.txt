@@ -22,3 +22,22 @@ sujeito: código de identificação do participante
 grupo: varíavel categórica com 2 níveis "Controle" e "Tratamento"
 pre_test: desempenho motoro antes do tratamento
 pos_test: desempenho motoro depois do tratamento
+
+
+
+2.
+
+Nome do arquivo: a.lituratus.csv
+Separador: virgula ","
+Decimal: ponto "."
+
+Descrição da data: Dados ficticios de uma amostra de 196 morcegos da espécie Artibeus lituratus, coletados ao longo de um ano
+          	   em um hábitat urbano e um florestal. A cada animal se tomaron medidas do comprimento do antebraço e masa corporal.
+
+Variáveis
+
+Habitat: Variável categórica. Tipo de hábitat onde o animal foi coletado. Na floresta ou dentro da cidade. Níveis: Forest, Urban.
+
+Forearm: Variável contínua. Comprimento do antebraço (mm) medido com um Paquímetro de campo. Valores: 42.9 - 72.9
+
+Body_mass: Variável contínua. Masa corporal (g) medida com uma Balança de campo. Valores: 78 - 172
