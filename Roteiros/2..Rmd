@@ -10,8 +10,6 @@ output:
 
 > Oi. Em esta prática aprenderemos como ler, corregir e manipular dados. Há muitas formas de corregir dados por tanto este é só um começo.
 
-$~$
-
 With the powerful `rmarkdown` package, we could easily create nice HTML document
 by adding some meta information in the header, for example
 
