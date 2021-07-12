@@ -1,6 +1,6 @@
 ---
 title: "Prática 1: Leitura e manipulação de dados"
-author: "Guillermo Florez Montero e Otávio Marchetti"
+author: "Guillermo Florez Montero e Otávio César Marchetti"
 date: "Julho de 2021"
 output:
   prettydoc::html_pretty:
@@ -9,11 +9,11 @@ output:
 
 
 > Olá. 
-> Todos os dados podem ter anomalías como resultado de erros de digitação ou formatação. Em esta prática aprenderemos como ler, manipular e corregir algumas anomalías de nossos dados.
+> Todos os dados coletados podem ter anomalias como resultado de erros de digitação ou formatação. Nesta prática aprenderemos como ler, manipular e corrigir algumas anomalias de nossos dados.
 
 $~$
 
-No repositório de [github](https://github.com/gflorezm/SemanaBiologiaUFABC_2021), dentro da pasta `Dados` estão depositados todos os arquivos de dados e um arquivo de metadados, nos metadados está a explicação detalhada da estrutura dos dados que usaremos no curso.
+No repositório do [github](https://github.com/gflorezm/SemanaBiologiaUFABC_2021), dentro da pasta `Dados` estão depositados todos os arquivos de dados e um arquivo de metadados, nos metadados está a explicação detalhada da estrutura dos dados que usaremos no curso.
 
 Vamos descarregar o arquivo de `metadados.txt` para conhecer a estrutura dos dados. Todos os arquivos serão descarregados diretamente do github.
 
@@ -38,7 +38,7 @@ Tome um tempo para ler os metadados.
 
 $~$
 
-Agora vamos trabalhar com o conjunto de dados chamado `tennis.csv`. Usaremos o link da fonte porém, desta vez iremos salvá-los como um *data frame* no nosso ambiente de trabalho (não no diretório de nossa PC).
+Agora vamos trabalhar com o conjunto de dados chamado `tennis.csv`. Usaremos o link da fonte porém, desta vez iremos salvá-los como um *data frame* no nosso ambiente de trabalho (não no diretório de nosso PC).
 
 ```{r ler_dados2, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -53,11 +53,11 @@ link_tennis <- "https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2
 tennis <- read.csv(link_tennis, sep = ";")
 ```
 
-Perceba que usamos uma função distinta `read.csv()` e demos para ela o link da fonte e o argumento `sep = ";"`. Este último indica que o separador das colunas é um ponto e vírgula e não só uma vírgula (opção por defeito).
+Perceba que usamos uma função distinta `read.csv()` e demos para ela o link da fonte e o argumento `sep = ";"`. Este último indica que o separador das colunas é um ponto e vírgula e não só uma vírgula (opção padrão).
 
 $~$
 
-Agora vamos explorar de forma geral os dados. As funções `head()` e `tail()` devolvem as primeiras seis linhas e as ulítmas seis linhas do *data frame*. A função `View()` abre o *data frame* inteiro em uma aba ao lado do script.
+Agora vamos explorar de forma geral os dados. As funções `head()` e `tail()` devolvem as primeiras seis linhas e as ultímas seis linhas do *data frame*. A função `View()` abre o *data frame* inteiro em uma aba ao lado do script.
 
 ```{r explorar, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -70,7 +70,7 @@ View(tennis)
 
 $~$
 
-Vamos explorar os reumos dos dados usando as funções `summary()` e `str()`. Vocês conseguem diferenciar as saídas dessas funções?
+Vamos explorar os resumos dos dados usando as funções `summary()` e `str()`. Vocês conseguem diferenciar as saídas dessas funções?
 
 ```{r explorar2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -80,7 +80,7 @@ str(tennis)
 
 ```
 
-Podemos ver que por algúm motivo, a variável `pos_test` é de tipo `character`quando devería ser numérica. Vamos explorar os valores dessa variável usando a função `unique()`
+Podemos ver que, por algum motivo, a variável `pos_test` é do tipo `character`quando deveria ser numérica. Vamos explorar os valores dessa variável usando a função `unique()`
 
 ```{r explorar3, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -90,7 +90,7 @@ unique(tennis$pos_test)
 > Uma tradução dessa linha de código: *R por favor, pega o data frame `tennis`, separa dele a coluna `pos_tes` e mostra os valores únicos (não repetidos).*
 
 
-Já percebemos as anomalías dos dados, a pessoa que transcreveu as planilhas colocou *"Nao"* nas células onde não havía dados (dados faltantes). Como o R reconheceu texto no meio dessa coluna a transformou em tipo `character`. Vamos corregir isso substituindo todos os "Nao" por "NA".
+Já percebemos as anomalias dos dados, a pessoa que transcreveu as planilhas colocou *"Nao"* nas células onde não haviam dados (dados faltantes). Como o R reconheceu texto no meio dessa coluna a transformou em tipo `character`. Vamos corrigir isso substituindo todos os "Nao" por "NA".
 
 ```{r subsNA, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -98,7 +98,7 @@ tennis$pos_test[tennis$pos_test == "Nao"] <- NA
 
 ```
 
-> Uma tradução dessa linha de código: *R por favor, pega os valores da coluna `pos_test` do meu data frame `tennis` que tenham valores iguais a "Nao" e substitui por NA.*
+> Uma tradução dessa linha de código: *R, por favor, pega os valores da coluna `pos_test` do meu data frame `tennis` que tenham valores iguais a "Nao" e substitui por NA.*
 
 Vamos transformar, finalmente, essa coluna em uma variável numérica.
 
@@ -115,7 +115,7 @@ unique(tennis$grupo)
 
 ```
 
-Perceba que há um erro: `tratamento` em alguma das colunas. Vamos primeiro ver onde está esse erro para corrigî-lo e depois transformar a variável `grupo` em um **Fator** já que por enquanto ela é só uma variável que contem texto mas esse texto precisa ser organizado na forma de uma variável categórica.
+Perceba que há um erro: `tratamento` em alguma das colunas. Vamos primeiro ver onde está esse erro para corrigi-lo e depois transformar a variável `grupo` em um **Fator** já que por enquanto ela é só uma variável que contém texto mas esse texto precisa ser organizado na forma de uma variável categórica.
 
 ```{r transf2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
@@ -146,6 +146,6 @@ write.csv(tennis, file = "tennis.csv", row.names = FALSE)
 $~$
 
 
-Agora é turno de vocês ler e corregir os dados do arquivo `a.lituratus` que se encontram [neste link](https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/a.lituratus.csv). 
+Agora é a vez de vocês ler e corrigir os dados do arquivo `a.lituratus` que se encontram [neste link](https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/a.lituratus.csv). 
 
 *Uma ajuda: todas as células que tenham `0` deveriam ser `NA`.*
