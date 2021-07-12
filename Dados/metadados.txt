@@ -1,0 +1,24 @@
+DESCRIÇÃO DOS DADOS UTILIZADOS NAS PRÁTICAS
+
+G. Florez Montero & O. Marchetti, 2021
+
+
+1. 
+
+Nome do arquivo: terapia.csv
+Separador: ponto e virgula ";"
+
+
+Descrição da data: Dados de uma amostra ficticia de 120 sujeitos saudáveis porém não praticantes de esportes.
+                   O tratamento consistiu em um treinamento de Tennis de Mesa duránte 30 días.
+                   Os sujeitos do grupo controle não participaram do treinamento.
+                   A variável medida foi o Desempenho Motoro (medido em unidades arbitrárias de 0 - 50).
+                   Alguns sujeitos não completaram o tratamento (foram identificados como "Nao" nos dados do pós-teste)
+                   
+
+Variávels:
+
+sujeito: código de identificação do participante
+grupo: varíavel categórica com 2 níveis "Controle" e "Tratamento"
+pre_test: desempenho motoro antes do tratamento
+pos_test: desempenho motoro depois do tratamento
