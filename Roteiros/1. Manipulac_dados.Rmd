@@ -7,8 +7,8 @@ output:
     theme: lumen
 ---
 
+$~$
 
-> Olá. 
 > Todos os dados coletados podem ter anomalias como resultado de erros de digitação ou formatação. Nesta prática aprenderemos como ler, manipular e corrigir algumas anomalias de nossos dados.
 
 $~$

@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Guillermo Florez Montero e Otávio Marchetti" />
+<meta name="author" content="Guillermo Florez Montero e Otávio César Marchetti" />
 
 
 <title>Prática 1: Leitura e manipulação de dados</title>
@@ -195,18 +195,19 @@ a.sourceLine {
 
 <section class="page-header">
 <h1 class="title toc-ignore project-name">Prática 1: Leitura e manipulação de dados</h1>
-<h4 class="author project-author">Guillermo Florez Montero e Otávio Marchetti</h4>
+<h4 class="author project-author">Guillermo Florez Montero e Otávio César Marchetti</h4>
 <h4 class="date project-date">Julho de 2021</h4>
 </section>
 
 
 
 <section class="main-content">
+<p><span class="math inline">\(~\)</span></p>
 <blockquote>
-<p>Olá. Todos os dados podem ter anomalías como resultado de erros de digitação ou formatação. Em esta prática aprenderemos como ler, manipular e corregir algumas anomalías de nossos dados.</p>
+<p>Todos os dados coletados podem ter anomalias como resultado de erros de digitação ou formatação. Nesta prática aprenderemos como ler, manipular e corrigir algumas anomalias de nossos dados.</p>
 </blockquote>
 <p><span class="math inline">\(~\)</span></p>
-<p>No repositório de <a href="https://github.com/gflorezm/SemanaBiologiaUFABC_2021">github</a>, dentro da pasta <code>Dados</code> estão depositados todos os arquivos de dados e um arquivo de metadados, nos metadados está a explicação detalhada da estrutura dos dados que usaremos no curso.</p>
+<p>No repositório do <a href="https://github.com/gflorezm/SemanaBiologiaUFABC_2021">github</a>, dentro da pasta <code>Dados</code> estão depositados todos os arquivos de dados e um arquivo de metadados, nos metadados está a explicação detalhada da estrutura dos dados que usaremos no curso.</p>
 <p>Vamos descarregar o arquivo de <code>metadados.txt</code> para conhecer a estrutura dos dados. Todos os arquivos serão descarregados diretamente do github.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># o link do arquivo</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
@@ -222,7 +223,7 @@ a.sourceLine {
 <p>Percebam que aqui fizemos duas coisas importantes: 1) Criamos um objeto com o link da fonte dos dados e 2) Salvamos no nosso diretório de trabalho usando a função <code>download.file(url, path)</code>. Perceba que os argumentos desta função foram escritos em ordem = primeiro o <em>url</em> e depois o <em>caminho</em> do diretório onde será salvo, porém como estamos trabalhando em um diretório principal usamos só o nome final do arquivo.</p>
 <p>Tome um tempo para ler os metadados.</p>
 <p><span class="math inline">\(~\)</span></p>
-<p>Agora vamos trabalhar com o conjunto de dados chamado <code>tennis.csv</code>. Usaremos o link da fonte porém, desta vez iremos salvá-los como um <em>data frame</em> no nosso ambiente de trabalho (não no diretório de nossa PC).</p>
+<p>Agora vamos trabalhar com o conjunto de dados chamado <code>tennis.csv</code>. Usaremos o link da fonte porém, desta vez iremos salvá-los como um <em>data frame</em> no nosso ambiente de trabalho (não no diretório de nosso PC).</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># O link da fonte</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a></span>
 <span id="cb2-3"><a href="#cb2-3"></a>link_tennis &lt;-<span class="st"> &quot;https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/tennis.csv&quot;</span></span>
@@ -232,34 +233,34 @@ a.sourceLine {
 <span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Criamos um objeto com o dados</span></span>
 <span id="cb2-8"><a href="#cb2-8"></a></span>
 <span id="cb2-9"><a href="#cb2-9"></a>tennis &lt;-<span class="st"> </span><span class="kw">read.csv</span>(link_tennis, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</span></code></pre></div>
-<p>Perceba que usamos uma função distinta <code>read.csv()</code> e demos para ela o link da fonte e o argumento <code>sep = &quot;;&quot;</code>. Este último indica que o separador das colunas é um ponto e vírgula e não só uma vírgula (opção por defeito).</p>
+<p>Perceba que usamos uma função distinta <code>read.csv()</code> e demos para ela o link da fonte e o argumento <code>sep = &quot;;&quot;</code>. Este último indica que o separador das colunas é um ponto e vírgula e não só uma vírgula (opção padrão).</p>
 <p><span class="math inline">\(~\)</span></p>
-<p>Agora vamos explorar de forma geral os dados. As funções <code>head()</code> e <code>tail()</code> devolvem as primeiras seis linhas e as ulítmas seis linhas do <em>data frame</em>. A função <code>View()</code> abre o <em>data frame</em> inteiro em uma aba ao lado do script.</p>
+<p>Agora vamos explorar de forma geral os dados. As funções <code>head()</code> e <code>tail()</code> devolvem as primeiras seis linhas e as ultímas seis linhas do <em>data frame</em>. A função <code>View()</code> abre o <em>data frame</em> inteiro em uma aba ao lado do script.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">head</span>(tennis)</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw">tail</span>(tennis)</span>
 <span id="cb3-4"><a href="#cb3-4"></a></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="kw">View</span>(tennis)</span></code></pre></div>
 <p><span class="math inline">\(~\)</span></p>
-<p>Vamos explorar os reumos dos dados usando as funções <code>summary()</code> e <code>str()</code>. Vocês conseguem diferenciar as saídas dessas funções?</p>
+<p>Vamos explorar os resumos dos dados usando as funções <code>summary()</code> e <code>str()</code>. Vocês conseguem diferenciar as saídas dessas funções?</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">summary</span>(tennis)</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="kw">str</span>(tennis)</span></code></pre></div>
-<p>Podemos ver que por algúm motivo, a variável <code>pos_test</code> é de tipo <code>character</code>quando devería ser numérica. Vamos explorar os valores dessa variável usando a função <code>unique()</code></p>
+<p>Podemos ver que, por algum motivo, a variável <code>pos_test</code> é do tipo <code>character</code>quando deveria ser numérica. Vamos explorar os valores dessa variável usando a função <code>unique()</code></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">unique</span>(tennis<span class="op">$</span>pos_test)</span></code></pre></div>
 <blockquote>
 <p>Uma tradução dessa linha de código: <em>R por favor, pega o data frame <code>tennis</code>, separa dele a coluna <code>pos_tes</code> e mostra os valores únicos (não repetidos).</em></p>
 </blockquote>
-<p>Já percebemos as anomalías dos dados, a pessoa que transcreveu as planilhas colocou <em>“Nao”</em> nas células onde não havía dados (dados faltantes). Como o R reconheceu texto no meio dessa coluna a transformou em tipo <code>character</code>. Vamos corregir isso substituindo todos os “Nao” por “NA”.</p>
+<p>Já percebemos as anomalias dos dados, a pessoa que transcreveu as planilhas colocou <em>“Nao”</em> nas células onde não haviam dados (dados faltantes). Como o R reconheceu texto no meio dessa coluna a transformou em tipo <code>character</code>. Vamos corrigir isso substituindo todos os “Nao” por “NA”.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>tennis<span class="op">$</span>pos_test[tennis<span class="op">$</span>pos_test <span class="op">==</span><span class="st"> &quot;Nao&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></span></code></pre></div>
 <blockquote>
-<p>Uma tradução dessa linha de código: <em>R por favor, pega os valores da coluna <code>pos_test</code> do meu data frame <code>tennis</code> que tenham valores iguais a “Nao” e substitui por NA.</em></p>
+<p>Uma tradução dessa linha de código: <em>R, por favor, pega os valores da coluna <code>pos_test</code> do meu data frame <code>tennis</code> que tenham valores iguais a “Nao” e substitui por NA.</em></p>
 </blockquote>
 <p>Vamos transformar, finalmente, essa coluna em uma variável numérica.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>tennis<span class="op">$</span>pos_test &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(tennis<span class="op">$</span>pos_test)</span></code></pre></div>
 <p>Vamos explorar os valores da variável grupo, vai que tem erros de digitação também</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">unique</span>(tennis<span class="op">$</span>grupo)</span></code></pre></div>
-<p>Perceba que há um erro: <code>tratamento</code> em alguma das colunas. Vamos primeiro ver onde está esse erro para corrigî-lo e depois transformar a variável <code>grupo</code> em um <strong>Fator</strong> já que por enquanto ela é só uma variável que contem texto mas esse texto precisa ser organizado na forma de uma variável categórica.</p>
+<p>Perceba que há um erro: <code>tratamento</code> em alguma das colunas. Vamos primeiro ver onde está esse erro para corrigi-lo e depois transformar a variável <code>grupo</code> em um <strong>Fator</strong> já que por enquanto ela é só uma variável que contém texto mas esse texto precisa ser organizado na forma de uma variável categórica.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># quantos erros há? </span></span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="kw">sum</span>(tennis<span class="op">$</span>grupo <span class="op">==</span><span class="st"> &quot;tratamento&quot;</span>)</span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
@@ -274,7 +275,7 @@ a.sourceLine {
 <p>Para finalizar, vamos salvar a planilha de dados como um arquivo <code>.csv</code> em nossa pasta de trabalho.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">write.csv</span>(tennis, <span class="dt">file =</span> <span class="st">&quot;tennis.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p><span class="math inline">\(~\)</span></p>
-<p>Agora é turno de vocês ler e corregir os dados do arquivo <code>a.lituratus</code> que se encontram <a href="https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/a.lituratus.csv">neste link</a>.</p>
+<p>Agora é a vez de vocês ler e corrigir os dados do arquivo <code>a.lituratus</code> que se encontram <a href="https://raw.githubusercontent.com/gflorezm/SemanaBiologiaUFABC_2021/main/Dados/a.lituratus.csv">neste link</a>.</p>
 <p><em>Uma ajuda: todas as células que tenham <code>0</code> deveriam ser <code>NA</code>.</em></p>
 </section>
 
