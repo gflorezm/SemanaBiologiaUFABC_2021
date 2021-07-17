@@ -19,7 +19,9 @@ $~$
 
 Vamos iniciar o nosso exemplo com problema simples de pesquisa.
 
-Queremos saber se o consumo de certo suplemento vitamínico aumenta a massa corporal para medir o uso potencial em pessoas que desejam aumentar a sua massa. Realizou-se um experimento no qual um grupo de participantes com massa inferior à normal e foram tratados com o suplemento ou placebo durante um mes. Mediu-se a massa inicial de cada participante ao início do experimento e a massa depois dos 30 dias de tomar o comprimido. No experimento participaram 80 voluntários do mesmo grupo de idades, 40 tomaram um placebo e 40 o suplemento.
+Queremos saber se o consumo de certo suplemento vitamínico aumenta a massa corporal para medir o uso potencial em pessoas que desejam aumentar a sua massa. Realizou-se um experimento no qual um grupo de participantes com massa inferior à normal e foram tratados com o suplemento ou placebo durante um mes. Mediu-se a massa inicial de cada participante ao início do experimento e a massa depois dos 30 dias de tomar o comprimido. No experimento participaram 80 voluntários do mesmo grupo de idades, 40 tomaram um placebo e 40 o suplemento. 
+
+Os dados encontram-se neste [link](https://github.com/gflorezm/SemanaBiologiaUFABC_2021/blob/main/Dados/suplemento.RData) só precisam clicar *Download* e salvá-los na pasta do seu projeto do curso. Antes de iniciar, confira que os dados estão salvos na pasta, devería aparecer o arquivo `suplemento.RData`. 
 
 
 
