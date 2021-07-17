@@ -1,0 +1,314 @@
+---
+title: "Prática 3: Teste de Hipóteses"
+author: "Guillermo Florez Montero e Otávio César Marchetti"
+date: "`Julho de 2021`"
+output:
+  prettydoc::html_pretty:
+    theme: lumen
+---
+
+$~$
+
+> Nesta prática vamos usar a teoría estatística que aprendemos nas práticas anteriores para [Testar Hipóteses](https://pt.wikipedia.org/wiki/Testes_de_hip%C3%B3teses). O nosso foco será um tipo de contraste bastante básico porém muito utilizado que é baseado na **diferença entre médias de grupos distintos**. 
+>
+> Usaremos dois enfoques, o primeiro e o teste a través da construção de [intervalos de confiança](https://pt.wikipedia.org/wiki/Intervalo_de_confian%C3%A7a) para ambas médias, e o segundo será o teste de inferência clássico [t de Student](https://pt.wikipedia.org/wiki/Teste_t_de_Student).
+
+$~$
+
+## Dados e hipóteses
+
+Vamos iniciar o nosso exemplo com problema simples de pesquisa.
+
+Queremos saber se o consumo de certo suplemento vitamínico aumenta a massa corporal para medir o uso potencial em pessoas que desejam aumentar a sua massa. Realizou-se um experimento no qual um grupo de participantes com massa inferior à normal e foram tratados com o suplemento ou placebo durante um mes. Mediu-se a massa inicial de cada participante ao início do experimento e a massa depois dos 30 dias de tomar o comprimido. No experimento participaram 80 voluntários do mesmo grupo de idades, 40 tomaram um placebo e 40 o suplemento.
+
+
+
+Vamos explorar essa variável de forma gráfica, construindo um histograma e adicionando a média como uma linha vertical (lembre-se de rodar o código linha por linha para ver a saída de cada função).
+
+```{r histo1, echo=TRUE, message=FALSE, warning=FALSE}
+
+hist(universo_1, main = "Histograma de Variável Gaussiana",
+     col = "lightgreen", xlab = "Variável", ylab = "Frequência", probability = TRUE)
+    abline(v = mean(universo_1), col = "red", lwd = 2)
+
+```
+
+Calcule a média e o desvio padrão usando as funções `mean()` e `sd()`. Perceba que não são exatamente 5 e 2.5 que foram os valores exatos que usamos para a simulação, **por quê?**
+
+$~$
+
+### Amostragem
+
+Agora vamos simular uma amostragem aleatória de 150 unidades.
+
+```{r amostra, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+amostra <- sample(universo_1, size = 150)
+amostra
+
+```
+
+
+Calcule a média e o desvio padrão da amostra.
+
+$~$
+
+Agora vamos fazer essa amostragem acontecer 200 vezes. Imaginem que fizemos o experimento (ou saímos para campo) 200 vezes em momentos distintos para pegar 150 unidades de observação...
+
+> Não vamos repetir o código anterior por mais 199 vezes (pelo menos não na mão). Usaremos um *loop* para executar o mesmo código muitas vezes.
+
+```{r amostras, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+# Primeiro criamos uma matriz para salvar essas amostras que faremos no loop
+amostras_1 <- matrix(nrow = 150, ncol = 200)
+
+# Amostragem
+
+for (i in 1:200)
+{
+  amostras_1[,i] = sample(universo_1, size = 150)
+}
+
+```
+
+Podem explorar as amostras a vontade mas lembrem-se que é uma matriz enorme. Use a função `dim()` aplicada ao objeto `amostras_1` para conferir o tamanho, a saída deveriam ser dois valores com o número de linhas e colunas.
+
+$~$
+
+Calculemos a média de cada uma das amostras usando a função `apply()` com três argumentos: 1) o objeto (que é uma matriz), 2) a direção onde vamos calcular (1 para linhas e 2 para colunas) e 3) a função que iremos aplicar na matriz. Podem calcular os desvíos usando a mesma função mas trocando o último argumento por `sd`.
+
+```{r medias2, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+medias_1 <- apply(amostras_1, 2, mean)
+
+```
+
+Vamos plotar a distribuição das 200 médias amostrais e ajustar uma curva Gaussiana.
+
+```{r histo2, echo=TRUE, message=FALSE, warning=FALSE}
+
+hist(medias_1, col = "lightpink", main = "Histograma das médias amostrais (Universo 1)", xlab = "Médias", 
+     ylab = "Frequência", probability = TRUE, xlim = c(4,6), ylim = c(0,2), nclass = 11)
+
+curve(dnorm(x, mean = mean(medias_1), sd = sd(medias_1)),
+      lwd = 2.5, add = TRUE, yaxt = "n")
+
+```
+
+A distribuição das médias amostrais é, de fato, Gaussiana. Agora vamos estimar a média. Vamos calcular a média das médias (a grande média) e compará-la com a média do nosso universo amostral, aquela que na realidade é impossível conhecer mas que agora conhecemos porque nós simulamos este universo. 
+
+```{r medias3, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+mean(medias_1)
+mean(universo_1)
+
+```
+
+Elas são bem parecidas, não é? De fato a média das médias amostrais é a melhor estimativa que podemos fazer de uma média populacional (aquela que na realidade é impossível conhecer). 
+
+$~$
+
+## Amostrando uma população Uniforme
+
+Agora vamos fazer a mesma simulação mas criando um universo de distribuição uniforme com valores entre 0 e 10.
+
+**Alerta:** esta simulação gera ~ 40 MB de dados, se for muito pesado, é melhor testar com `n = 500000`.
+```{r unif, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+universo_2 <- runif(n = 5000000, min = 0, max = 10)
+
+```
+
+Vamos fazer o histograma, você pode também calcular a média deste universo.
+
+```{r histo3, echo=TRUE, message=FALSE, warning=FALSE}
+
+hist(universo_2, main = "Histograma de Variável Uniforme",
+     col = "lightgreen", xlab = "Variável", ylab = "Frequência")
+  abline(v = mean(universo_2), col = "red", lwd = 2)
+
+```
+
+Nada Gaussiano, não é? Agora vamos fazer a amostragem e ver se cumpre o Teorema Central do Limite.
+
+### Amostragem
+
+Agora vamos simular uma amostragem aleatória de 150 unidades.
+
+```{r amostras2, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+# Primeiro criamos uma matriz para salvar essas amostras que faremos no loop
+amostras_2 <- matrix(nrow = 150, ncol = 200)
+
+# Amostragem
+
+for (i in 1:200)
+{
+  amostras_2[,i] = sample(universo_2, size = 150)
+}
+
+```
+
+Calculamos as médias amostrais deste universo Uniforme
+
+```{r medias4, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+medias_2 <- apply(amostras_2, 2, mean)
+
+```
+
+E finalmente plotamos a distribuição das 200 médias amostrais e ajustamos uma curva Gaussiana.
+
+```{r histo4, echo=TRUE, message=FALSE, warning=FALSE}
+
+hist(medias_2, col = "lightpink", main = "Histograma das médias amostrais (Universo 2)", xlab = "Médias", 
+     ylab = "Frequência", probability = TRUE, xlim = c(4,6), ylim = c(0,2), nclass = 11)
+
+curve(dnorm(x, mean = mean(medias_2), sd = sd(medias_2)),
+      lwd = 2.5, add = TRUE, yaxt = "n")
+
+```
+
+Calculamos as médias para conferir
+
+```{r medias5, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+mean(medias_2)
+mean(universo_2)
+
+```
+
+Parabéns, acabamos de comprovar o teorema central do limite. E aprendemos duas coisas importantes:
+
+1) Sem importar a distribuição de probabilidades da população, a distribuição de médias amostrais segue uma distribuição Gaussiana.
+
+2) A estimativa dos parâmetros é mais acurada quanto maior for o tamanho amostral.
+
+$~$
+
+> Aqui é necessário fazer um parenteses para sair dos universos criados e voltar à realidade. Quando fazemos experimentos ou vamos ao campo na vida real, é muito difícil obter amostras repetidas de tamanhos grandes (*n > 100*). Sempre temos essa demanda de conflitos (sendo muito otimista) entre a) fazer varias amostragens com n pequeno ou b) fazer uma amostragem com n mais ou menos grande. O melhor que podemos fazer para lidar com isso é utilizar a **estatística** para fazer **inferência** sobre os nossos parâmetros, usando modelos probabilísticos conhecidos.
+
+$~$
+
+## Inferência por intervalos de confiança
+
+Vamos fazer inferência da média de uma amostra construindo intervalos de confiança e usando como modelo probabilístico a distribuição [*t de Student*](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_t_de_Student). Lembremos que esta distribuição é simétrica, com média $\bar{x} = 0$ e desvio padrão $s = 1$ porém, a forma da curva depende dos graus de liberdade (tamanho amostral). 
+
+```{r dist t1, echo=FALSE}
+curve(dt(x, 20), from = -4, to = 4, col = "black", main = "Distribuição t Student com distintos graus de liberdade",
+      xlab = "Valores de t", ylab = "Densidade de probabilidades", lwd = 2)
+
+curve(dt(x, 3), from = -4, to = 4, col = "blue", add = TRUE, lwd = 2)
+
+curve(dt(x, 1), from = -4, to = 4, col = "red", add = TRUE, lwd = 2)
+
+legend(x = 2, y = 0.4, legend = c("20 g.l", "3 g.l", "1 g.l"), 
+       col = c("black", "blue", "red"), bty = "n", lwd = 2, lty = 1)
+
+
+```
+
+Esta distribuição tem sido estudada por mais de 100 anos, por tanto a probabilidade associada a cada valor para diferentes tamanhos amostrais é bem conhecido. Por exemplo, o 95% dos valores de uma distribuição com 20 graus de liberdade estão entre `r round(qt(0.025, 20),3)` e `r round(qt(0.975, 20),3)`
+
+```{r dist t2, echo=FALSE}
+curve(dt(x, 20), from = -4, to = 4, col = "black", main = "Distribuição t Student com 20 graus de liberdade",
+      xlab = "Valores de t", ylab = "Densidade de probabilidades", lwd = 2)
+abline(v = qt(0.025, 20), col = "darkred", lwd = 2, lty = 3)
+abline(v = qt(0.975, 20), col = "darkred", lwd = 2, lty = 3)
+
+```
+
+Então, fazendo uma aproximação a uma distribuição *t de Student*, cuja densidade de probabilidade é bem conhecida, podemos calcular intervalos de confiança para a média amostral usando a equação:
+
+$$
+\bar{x} \pm t_{\alpha/2, gl} \frac{s}{\sqrt{n}}
+$$
+
+onde:
+
+* $\bar{x} =$ média amostral
+
+* $t_{\alpha/2, gl} =$ valor de *t* para n-1 graus de liberdade e probabilidade $\alpha/2$
+
+* $s =$ desvio padrão amostral
+
+* $n =$ tamanho amostral
+
+Vamos aplicar essa equação criando uma função simples no R.
+
+> A função é meio *fancy*, ela poderia ter sido mais rudimentar mas basicamente aceita dois argumentos:
+>
+> x = um vetor numérico
+
+> alpha = um valor de probabilidade (1-confiança)
+>
+> Com esses argumentos ela aplica a equação no nosso vector e devolve dois valores, o intervalo inferior e o superior
+
+```{r funcic, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+intconf <- function(x, alpha) {
+  
+  # parâmetros
+  media <- mean(x, na.rm = TRUE)
+  dp <- sd(x, na.rm = TRUE)
+  n <- length(x)
+  
+  # nomes dos intervalos
+  nomes <- c(paste0(alpha/2*100, "%"), paste0((1-alpha/2)*100, "%"))
+  
+  resultado <- c(media + (qt(alpha/2, n-1) * dp / sqrt(n)),
+                 media + (qt(1-alpha/2, n-1) * dp / sqrt(n)))
+  names(resultado) <- nomes
+  resultado
+}
+
+```
+
+Vamos aplicar essa função sobre uma amostra criada a partir de aquele meu Universo Gaussiano.
+
+```{r aplicando, echo=TRUE}
+
+# A amostra de n = 50
+amostra <- sample(universo_1, size = 50)
+
+# A média
+mean(amostra)
+
+# O intervalo de confiança de 95 % da média
+intconf(amostra, 0.05)
+
+```
+
+Podemos afirmar com 95% de confiança que a média real (aquela que a gente não tem como conhecer) encontra-se dentro deste intervalo.
+
+Para finalizar, repita o cálculo para diferentes amostras aumentando o valor de *n* em 100, 500, 1000, 1500 e veja o que acontece com os intervalos de confiança. Mantenha o $\alpha = 0.05$.
+
+$~$
+
+$~$
+
+### **Extra:** Códigos para reproduzir os gráficos da distribuição *t de Student*
+
+```{r dist t3, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# As 3 curvas con distintos graus de liberdade
+
+curve(dt(x, 20), from = -4, to = 4, col = "black", main = "Distribuição t Student com distintos graus de liberdade",
+      xlab = "Valores de t", ylab = "Densidade de probabilidades", lwd = 2)
+
+curve(dt(x, 3), from = -4, to = 4, col = "blue", add = TRUE, lwd = 2)
+
+curve(dt(x, 1), from = -4, to = 4, col = "red", add = TRUE, lwd = 2)
+
+# legenda
+legend(x = 2, y = 0.4, legend = c("20 g.l", "3 g.l", "1 g.l"), 
+       col = c("black", "blue", "red"), bty = "n", lwd = 2, lty = 1)
+
+
+# A curva de 20 g.l. acotada em 95%
+curve(dt(x, 20), from = -4, to = 4, col = "black", main = "Distribuição t Student com 20 graus de liberdade",
+      xlab = "Valores de t", ylab = "Densidade de probabilidades", lwd = 2)
+
+abline(v = qt(0.025, 20), col = "darkred", lwd = 2, lty = 3)
+abline(v = qt(0.975, 20), col = "darkred", lwd = 2, lty = 3)
+
+```
