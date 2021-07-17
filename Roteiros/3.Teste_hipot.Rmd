@@ -15,7 +15,7 @@ $~$
 
 $~$
 
-## Dados e hipótese
+## Dados e hipóteses
 
 Vamos iniciar o nosso exemplo com problema simples de pesquisa.
 
@@ -75,27 +75,185 @@ Agora vamos fazer uma exploração gráfica dos dados. Faremos 3 tipos de gráfi
 
 ### 1. Histogramas
 
+Vamos fazer um histograma dos dois grupos sobrepostos e colocaremos uma linha vertical na média de cada grupo.
+
 ```{r histo, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 # primeiro para o grupo controle
 hist(suplemento$dif_massa[suplemento$grupo == "Controle"], # os valores do grupo Controle
      xlab = "Diferênça de massa", ylab = "Frequência", 
      main = " Histograma da diferênça de massa por grupo",
-     probability = TRUE, col = "lightpink", breaks = 11,
-     xlim = c(-4,10), ylim = c(0, 0.6))
+     probability = TRUE, col = "lightpink", breaks = 10,
+     xlim = c(-4,6), ylim = c(0, 0.6))
 
 # adicionamos os do tratamento
 hist(suplemento$dif_massa[suplemento$grupo == "Tratamento"], # os valores do grupo Tratamento
-     probability = TRUE, col = "lightblue", breaks = 11, add = TRUE)
+     probability = TRUE, col = "lightgreen", breaks = 10, add = TRUE)
 
 # Eu gosto dos gráficos fechados então...
 box()
 
 # adicionamos umas linhas verticais nas médias
 abline(v = medias[1], col = "darkred", lwd = 2.5, lty = 3) # grupo controle
-abline(v = medias[2], col = "darkblue", lwd = 2.5, lty = 3) # tratamento
+abline(v = medias[2], col = "darkgreen", lwd = 2.5, lty = 3) # tratamento
 
 # adicionamos a legenda
-legend(7, 0.6, legend = c("Controle", "Tratamento"), bty = "n",
-       col=c("lightpink", "lightblue"), pch = 15, pt.cex = 2)
+legend(4, 0.6, legend = c("Controle", "Tratamento"), bty = "n",
+       col = c("lightpink", "lightgreen"), pch = 15, pt.cex = 3)
 ```
+
+
+### 2. Box plot
+
+```{r box, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+boxplot(dif_massa ~ grupo, data = suplemento, 
+        "ylab" = "Diferênça de massa", xlab = "Grupo",
+        col = c("lightpink", "lightgreen"), 
+        pch = 16, notch = TRUE)
+```
+
+> O argumento `notch = TRUE` adiciona um intervalo de confiança para a mediana pode testar tirando este argumento.
+
+
+### 2. Violin plot
+
+O gráfico de violino mostra como é a distribuição dos dados (no formato de um violino), é um gráfico bastante completo já que inclui um boxplot. Para construir este tipo de gráficos tem pelo menos dois pacotes diferentes, hoje usaremos o pacote `vioplot`. 
+
+```{r violin, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# Para instalar o pacote use
+
+install.packages("vioplot")
+
+# Antes de usar o pacote precisa chamá-lo
+
+require("vioplot")
+
+# Agora vamos construir o gráfico
+
+vioplot(dif_massa ~ grupo, data = suplemento, 
+        "ylab" = "Diferênça de massa", xlab = "Grupo",
+        col = c("lightpink", "lightgreen"))
+```
+
+
+$~$
+
+## Teste das hipóteses
+
+Agora vamos testar a hipótese de que as médias do Tratamento e o Controle são distintas. Usaremos uma distribuição **t de Student** como modelo probabilístico e um $\alpha = 0.01$.
+
+
+### Teste por intervalos de confiança
+
+Vamos testar usando o método dos intervalos de confiança das médias, como o nosso $\alpha = 0.01$ vamos construir intervalos de 99% de confiança.
+
+Usaremos a função `intconf()` que criamos na [prática anterior](https://sites.google.com/view/x-semana-da-biologia-ufabc/minicursos/introdu%C3%A7%C3%A3o-%C3%A0-an%C3%A1lise-de-dados-no-r/roteiros-2?authuser=0).
+
+```{r funcic, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+intconf <- function(x, alpha) {
+  
+  # parâmetros
+  media <- mean(x, na.rm = TRUE)
+  dp <- sd(x, na.rm = TRUE)
+  n <- length(x)
+  
+  # nomes dos intervalos
+  nomes <- c(paste0(alpha/2*100, "%"), paste0((1-alpha/2)*100, "%"))
+  
+  resultado <- c(media + (qt(alpha/2, n-1) * dp / sqrt(n)),
+                 media + (qt(1-alpha/2, n-1) * dp / sqrt(n)))
+  names(resultado) <- nomes
+  resultado
+}
+
+```
+
+Vamos aplicar essa função para criar os intervalos usando a função `tapply()`
+
+```{r ics, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+intervalos <- tapply(suplemento$dif_massa, suplemento$grupo, intconf, alpha = 0.01)
+intervalos # para chamar o resultado
+```
+
+Vejam a estrutura da saída e comparem os intervalos de confiança de cada média. Tal vez seja melhor se fazemos um gráfico das médias e os intervalos de confiança.
+
+Vamos desenhar um gráfico elemento por elemento:
+
+
+```{r icplot, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+# Criamos um gráfico vazio
+plot("n", xlim = c(0.5, 2.5), ylim = c(-1,4), xaxt = "n", 
+     xlab = " Grupo", ylab = "Diferênca de massa", cex.lab = 1.2)
+
+# Adicionamos o eixo X
+axis(side = 1, at = c(1,2), labels = c("Controle", "Tratamento"))
+
+# Adicionamos as médias
+points(y = medias, x = c(1,2), cex = 2, pch = 16)
+
+# Adicionamos os intervalos para cada média
+lines(y = (intervalos$Controle), x = c(1,1), lwd = 3) # Controle
+lines(y = (intervalos$Tratamento), x = c(2,2), lwd = 3) # Tratamento
+
+# Adicionamos uma linha horizontal no zero
+abline(h = 0, lwd = 3, lty = 2, col = "red")
+```
+
+Podemos dizer que o Suplemento ajuda às pessoas a ganharem massa corporal? Qual sería o ganho em um mês de uso?
+
+
+### Teste de inferência t de Student
+
+Agora vamos contrastar as nossas hipóteses usando um teste de hipótese nula. Básicamente calculamos uma diferênça entre a média dos dois grupos e a aproximamos a uma distribuição *t de Student* com *n-2* graus de liberdade. 
+
+Se a hipótese nula for verdadeira esperariamos que esse valor de *t* caíse dentro de uma distribuição teórica que se aproxima à hipótese nula (não diferênça e por tanto $\mu = 0$) e acotada nos valores de t que agrupam $1 - \alpha$ das probabilidades.
+
+Vamos rodar o teste
+
+```{r t.test, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+teste_t <- t.test(dif_massa ~ grupo, data = suplemento)
+
+teste_t # para chamar o resultado  
+```
+
+Vamos ver o nosso valor de *t* graficamente em uma distribuição da hipótese nula com 78 graus de liberdade
+
+```{r t.test2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+
+curve(dt(x, 78), from = -11, to = 11, col = "black", xlab = "Valores de t", 
+      main = "Distribuição t Student da hipótese nula", 
+      ylab = "Densidade probabilística", lwd = 2.5)
+
+# adicionamos as cotas en alfa 0.01
+abline(v = qt(1-0.01/2, 78), col = "darkred", lwd = 2.5, lty = 3)
+abline(v = qt(0.01/2, 78), col = "darkred", lwd = 2.5, lty = 3)
+
+# adicionamos o nosso valor de t
+points(x = teste_t$statistic, y = 0, pch = 18, col = "darkblue", cex = 2)
+```
+
+Rejeitamos a hipótese nula?
+
+e o valor de p diz o quê?
+
+$~$
+
+
+**Agora é o turno de vocês:**
+
+Vamos testar a hipótese de que os morcegos da espécie *Artibeus lituratus* que moram no ambiente urbano são maiores aos que moram no ambiente florestal, sinta-se livre de usar uma das duas variáveis medidas: massa corporal ou comprimento do antebraço. Os dados estão no arquivo `a.lituratus.csv` que foram corregidos na primeira prática. Contrua um script capaz de:
+
+1) Ler e explorar os dados
+
+2) Calcular a média e o desvío padrão da variável selecionada por tipo de Hábitat
+
+3) Explorar graficamente os dados
+
+4) Calcular intervalos de 95% de confiança para a média da variável por tipo de Hábitat
+
+5) Testar a hipótese usando o teste t de Student com $\alpha = 0.05$

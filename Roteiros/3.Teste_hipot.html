@@ -208,8 +208,8 @@ a.sourceLine {
 <p>Usaremos dois enfoques, o primeiro e o teste a través da construção de <a href="https://pt.wikipedia.org/wiki/Intervalo_de_confian%C3%A7a">intervalos de confiança</a> para ambas médias, e o segundo será o teste de inferência clássico <a href="https://pt.wikipedia.org/wiki/Teste_t_de_Student">t de Student</a>.</p>
 </blockquote>
 <p><span class="math inline">\(~\)</span></p>
-<div id="dados-e-hipótese" class="section level2">
-<h2>Dados e hipótese</h2>
+<div id="dados-e-hipóteses" class="section level2">
+<h2>Dados e hipóteses</h2>
 <p>Vamos iniciar o nosso exemplo com problema simples de pesquisa.</p>
 <p>Queremos saber se o consumo de certo suplemento vitamínico aumenta a massa corporal para medir o uso potencial em pessoas que desejam aumentar a sua massa. Realizou-se um experimento no qual um grupo de participantes com massa inferior à normal e foram tratados com o suplemento ou placebo durante um mes. Mediu-se a massa inicial de cada participante ao início do experimento e a massa depois dos 30 dias de tomar o comprimido. No experimento participaram 80 voluntários do mesmo grupo de idades, 40 tomaram um placebo (grupo controle) e 40 o suplemento (grupo do tratamento).</p>
 <p>Os dados encontram-se neste <a href="https://github.com/gflorezm/SemanaBiologiaUFABC_2021/blob/main/Dados/suplemento.RData">link</a> só precisam clicar <em>Download</em> e salvá-los na pasta do seu projeto do curso. Antes de iniciar, confira que os dados estão salvos na pasta, devería aparecer o arquivo <code>suplemento.RData</code>.</p>
@@ -243,6 +243,139 @@ a.sourceLine {
 <blockquote>
 <p>Vendo a saída vocês conseguem saber como a função <code>tapply()</code> opera mas vou fazer uma tradução: <strong>R por favor, pega os valores do meu <em>Data frame</em> na variável <em>diferênça de massa</em> e calcula a <em>média</em> separando pelo <em>grupo</em> e salva isso num objeto chamado <em>medias</em>.</strong></p>
 </blockquote>
+<p><span class="math inline">\(~\)</span></p>
+<p>Agora vamos fazer uma exploração gráfica dos dados. Faremos 3 tipos de gráficos exploratórios: 1. histogramas sobrepostos (por grupo), 2. Box Plot e 3. Violin Plot</p>
+<div id="histogramas" class="section level3">
+<h3>1. Histogramas</h3>
+<p>Vamos fazer um histograma dos dois grupos sobrepostos e colocaremos uma linha vertical na média de cada grupo.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># primeiro para o grupo controle</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">hist</span>(suplemento<span class="op">$</span>dif_massa[suplemento<span class="op">$</span>grupo <span class="op">==</span><span class="st"> &quot;Controle&quot;</span>], <span class="co"># os valores do grupo Controle</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Diferênça de massa&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Frequência&quot;</span>, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>     <span class="dt">main =</span> <span class="st">&quot; Histograma da diferênça de massa por grupo&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>     <span class="dt">probability =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">&quot;lightpink&quot;</span>, <span class="dt">breaks =</span> <span class="dv">10</span>,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">4</span>,<span class="dv">6</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>))</span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co"># adicionamos os do tratamento</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">hist</span>(suplemento<span class="op">$</span>dif_massa[suplemento<span class="op">$</span>grupo <span class="op">==</span><span class="st"> &quot;Tratamento&quot;</span>], <span class="co"># os valores do grupo Tratamento</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>     <span class="dt">probability =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">&quot;lightgreen&quot;</span>, <span class="dt">breaks =</span> <span class="dv">10</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co"># Eu gosto dos gráficos fechados então...</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="kw">box</span>()</span>
+<span id="cb4-14"><a href="#cb4-14"></a></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co"># adicionamos umas linhas verticais nas médias</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="kw">abline</span>(<span class="dt">v =</span> medias[<span class="dv">1</span>], <span class="dt">col =</span> <span class="st">&quot;darkred&quot;</span>, <span class="dt">lwd =</span> <span class="fl">2.5</span>, <span class="dt">lty =</span> <span class="dv">3</span>) <span class="co"># grupo controle</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="kw">abline</span>(<span class="dt">v =</span> medias[<span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="dt">lwd =</span> <span class="fl">2.5</span>, <span class="dt">lty =</span> <span class="dv">3</span>) <span class="co"># tratamento</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co"># adicionamos a legenda</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="kw">legend</span>(<span class="dv">4</span>, <span class="fl">0.6</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;Controle&quot;</span>, <span class="st">&quot;Tratamento&quot;</span>), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb4-21"><a href="#cb4-21"></a>       <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>), <span class="dt">pch =</span> <span class="dv">15</span>, <span class="dt">pt.cex =</span> <span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="box-plot" class="section level3">
+<h3>2. Box plot</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">boxplot</span>(dif_massa <span class="op">~</span><span class="st"> </span>grupo, <span class="dt">data =</span> suplemento, </span>
+<span id="cb5-2"><a href="#cb5-2"></a>        <span class="st">&quot;ylab&quot;</span> =<span class="st"> &quot;Diferênça de massa&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Grupo&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>        <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>), </span>
+<span id="cb5-4"><a href="#cb5-4"></a>        <span class="dt">pch =</span> <span class="dv">16</span>, <span class="dt">notch =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<blockquote>
+<p>O argumento <code>notch = TRUE</code> adiciona um intervalo de confiança para a mediana pode testar tirando este argumento.</p>
+</blockquote>
+</div>
+<div id="violin-plot" class="section level3">
+<h3>2. Violin plot</h3>
+<p>O gráfico de violino mostra como é a distribuição dos dados (no formato de um violino), é um gráfico bastante completo já que inclui um boxplot. Para construir este tipo de gráficos tem pelo menos dois pacotes diferentes, hoje usaremos o pacote <code>vioplot</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Para instalar o pacote use</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">install.packages</span>(<span class="st">&quot;vioplot&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># Antes de usar o pacote precisa chamá-lo</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw">require</span>(<span class="st">&quot;vioplot&quot;</span>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co"># Agora vamos construir o gráfico</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="kw">vioplot</span>(dif_massa <span class="op">~</span><span class="st"> </span>grupo, <span class="dt">data =</span> suplemento, </span>
+<span id="cb6-12"><a href="#cb6-12"></a>        <span class="st">&quot;ylab&quot;</span> =<span class="st"> &quot;Diferênça de massa&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Grupo&quot;</span>,</span>
+<span id="cb6-13"><a href="#cb6-13"></a>        <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>))</span></code></pre></div>
+<p><span class="math inline">\(~\)</span></p>
+</div>
+</div>
+<div id="teste-das-hipóteses" class="section level2">
+<h2>Teste das hipóteses</h2>
+<p>Agora vamos testar a hipótese de que as médias do Tratamento e o Controle são distintas. Usaremos uma distribuição <strong>t de Student</strong> como modelo probabilístico e um <span class="math inline">\(\alpha = 0.01\)</span>.</p>
+<div id="teste-por-intervalos-de-confiança" class="section level3">
+<h3>Teste por intervalos de confiança</h3>
+<p>Vamos testar usando o método dos intervalos de confiança das médias, como o nosso <span class="math inline">\(\alpha = 0.01\)</span> vamos construir intervalos de 99% de confiança.</p>
+<p>Usaremos a função <code>intconf()</code> que criamos na <a href="https://sites.google.com/view/x-semana-da-biologia-ufabc/minicursos/introdu%C3%A7%C3%A3o-%C3%A0-an%C3%A1lise-de-dados-no-r/roteiros-2?authuser=0">prática anterior</a>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>intconf &lt;-<span class="st"> </span><span class="cf">function</span>(x, alpha) {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="co"># parâmetros</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  media &lt;-<span class="st"> </span><span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  dp &lt;-<span class="st"> </span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  n &lt;-<span class="st"> </span><span class="kw">length</span>(x)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  </span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="co"># nomes dos intervalos</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  nomes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">paste0</span>(alpha<span class="op">/</span><span class="dv">2</span><span class="op">*</span><span class="dv">100</span>, <span class="st">&quot;%&quot;</span>), <span class="kw">paste0</span>((<span class="dv">1</span><span class="op">-</span>alpha<span class="op">/</span><span class="dv">2</span>)<span class="op">*</span><span class="dv">100</span>, <span class="st">&quot;%&quot;</span>))</span>
+<span id="cb7-10"><a href="#cb7-10"></a>  </span>
+<span id="cb7-11"><a href="#cb7-11"></a>  resultado &lt;-<span class="st"> </span><span class="kw">c</span>(media <span class="op">+</span><span class="st"> </span>(<span class="kw">qt</span>(alpha<span class="op">/</span><span class="dv">2</span>, n<span class="dv">-1</span>) <span class="op">*</span><span class="st"> </span>dp <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(n)),</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                 media <span class="op">+</span><span class="st"> </span>(<span class="kw">qt</span>(<span class="dv">1</span><span class="op">-</span>alpha<span class="op">/</span><span class="dv">2</span>, n<span class="dv">-1</span>) <span class="op">*</span><span class="st"> </span>dp <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(n)))</span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="kw">names</span>(resultado) &lt;-<span class="st"> </span>nomes</span>
+<span id="cb7-14"><a href="#cb7-14"></a>  resultado</span>
+<span id="cb7-15"><a href="#cb7-15"></a>}</span></code></pre></div>
+<p>Vamos aplicar essa função para criar os intervalos usando a função <code>tapply()</code></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>intervalos &lt;-<span class="st"> </span><span class="kw">tapply</span>(suplemento<span class="op">$</span>dif_massa, suplemento<span class="op">$</span>grupo, intconf, <span class="dt">alpha =</span> <span class="fl">0.01</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>intervalos <span class="co"># para chamar o resultado</span></span></code></pre></div>
+<p>Vejam a estrutura da saída e comparem os intervalos de confiança de cada média. Tal vez seja melhor se fazemos um gráfico das médias e os intervalos de confiança.</p>
+<p>Vamos desenhar um gráfico elemento por elemento:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Criamos um gráfico vazio</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">plot</span>(<span class="st">&quot;n&quot;</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">2.5</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">4</span>), <span class="dt">xaxt =</span> <span class="st">&quot;n&quot;</span>, </span>
+<span id="cb9-3"><a href="#cb9-3"></a>     <span class="dt">xlab =</span> <span class="st">&quot; Grupo&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Diferênca de massa&quot;</span>, <span class="dt">cex.lab =</span> <span class="fl">1.2</span>)</span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co"># Adicionamos o eixo X</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="kw">axis</span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">at =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Controle&quot;</span>, <span class="st">&quot;Tratamento&quot;</span>))</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co"># Adicionamos as médias</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="kw">points</span>(<span class="dt">y =</span> medias, <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">cex =</span> <span class="dv">2</span>, <span class="dt">pch =</span> <span class="dv">16</span>)</span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co"># Adicionamos os intervalos para cada média</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="kw">lines</span>(<span class="dt">y =</span> (intervalos<span class="op">$</span>Controle), <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">3</span>) <span class="co"># Controle</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="kw">lines</span>(<span class="dt">y =</span> (intervalos<span class="op">$</span>Tratamento), <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="dt">lwd =</span> <span class="dv">3</span>) <span class="co"># Tratamento</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co"># Adicionamos uma linha horizontal no zero</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">0</span>, <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p>Podemos dizer que o Suplemento ajuda às pessoas a ganharem massa corporal? Qual sería o ganho em um mês de uso?</p>
+</div>
+<div id="teste-de-inferência-t-de-student" class="section level3">
+<h3>Teste de inferência t de Student</h3>
+<p>Agora vamos contrastar as nossas hipóteses usando um teste de hipótese nula. Básicamente calculamos uma diferênça entre a média dos dois grupos e a aproximamos a uma distribuição <em>t de Student</em> com <em>n-2</em> graus de liberdade.</p>
+<p>Se a hipótese nula for verdadeira esperariamos que esse valor de <em>t</em> caíse dentro de uma distribuição teórica que se aproxima à hipótese nula (não diferênça e por tanto <span class="math inline">\(\mu = 0\)</span>) e acotada nos valores de t que agrupam <span class="math inline">\(1 - \alpha\)</span> das probabilidades.</p>
+<p>Vamos rodar o teste</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>teste_t &lt;-<span class="st"> </span><span class="kw">t.test</span>(dif_massa <span class="op">~</span><span class="st"> </span>grupo, <span class="dt">data =</span> suplemento)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>teste_t <span class="co"># para chamar o resultado  </span></span></code></pre></div>
+<p>Vamos ver o nosso valor de <em>t</em> graficamente em uma distribuição da hipótese nula com 78 graus de liberdade</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">curve</span>(<span class="kw">dt</span>(x, <span class="dv">78</span>), <span class="dt">from =</span> <span class="dv">-11</span>, <span class="dt">to =</span> <span class="dv">11</span>, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Valores de t&quot;</span>, </span>
+<span id="cb11-2"><a href="#cb11-2"></a>      <span class="dt">main =</span> <span class="st">&quot;Distribuição t Student da hipótese nula&quot;</span>, </span>
+<span id="cb11-3"><a href="#cb11-3"></a>      <span class="dt">ylab =</span> <span class="st">&quot;Densidade probabilística&quot;</span>, <span class="dt">lwd =</span> <span class="fl">2.5</span>)</span>
+<span id="cb11-4"><a href="#cb11-4"></a></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co"># adicionamos as cotas en alfa 0.01</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">qt</span>(<span class="dv">1</span><span class="fl">-0.01</span><span class="op">/</span><span class="dv">2</span>, <span class="dv">78</span>), <span class="dt">col =</span> <span class="st">&quot;darkred&quot;</span>, <span class="dt">lwd =</span> <span class="fl">2.5</span>, <span class="dt">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw">abline</span>(<span class="dt">v =</span> <span class="kw">qt</span>(<span class="fl">0.01</span><span class="op">/</span><span class="dv">2</span>, <span class="dv">78</span>), <span class="dt">col =</span> <span class="st">&quot;darkred&quot;</span>, <span class="dt">lwd =</span> <span class="fl">2.5</span>, <span class="dt">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb11-8"><a href="#cb11-8"></a></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="co"># adicionamos o nosso valor de t</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="kw">points</span>(<span class="dt">x =</span> teste_t<span class="op">$</span>statistic, <span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">pch =</span> <span class="dv">18</span>, <span class="dt">col =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="dt">cex =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>Rejeitamos a hipótese nula?</p>
+<p>e o valor de p diz o quê?</p>
+<p><span class="math inline">\(~\)</span></p>
+<p><strong>Agora é o turno de vocês:</strong></p>
+<p>Vamos testar a hipótese de que os morcegos da espécie <em>Artibeus lituratus</em> que moram no ambiente urbano são maiores aos que moram no ambiente florestal, sinta-se livre de usar uma das duas variáveis medidas: massa corporal ou comprimento do antebraço. Os dados estão no arquivo <code>a.lituratus.csv</code> que foram corregidos na primeira prática. Contrua um script capaz de:</p>
+<ol style="list-style-type: decimal">
+<li><p>Ler e explorar os dados</p></li>
+<li><p>Calcular a média e o desvío padrão da variável selecionada por tipo de Hábitat</p></li>
+<li><p>Explorar graficamente os dados</p></li>
+<li><p>Calcular intervalos de 95% de confiança para a média da variável por tipo de Hábitat</p></li>
+<li><p>Testar a hipótese usando o teste t de Student com <span class="math inline">\(\alpha = 0.05\)</span></p></li>
+</ol>
+</div>
 </div>
 </section>
 
